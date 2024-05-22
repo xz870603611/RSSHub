@@ -118,7 +118,7 @@ export function gatherLegacyFromData(entries: any[], filterNested?: string[], us
                         legacy.retweeted_status = retweet.legacy;
                     }
                     if (userId === undefined || legacy.user_id_str === userId + '') {
-                        tweets.push(legacy);
+                        tweets.push({ ...legacy, full_text: tweet.note_tweet?.note_tweet_results?.result?.text || legacy.full_text });
                     }
                 }
             }
