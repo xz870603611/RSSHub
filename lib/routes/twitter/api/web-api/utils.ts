@@ -85,6 +85,8 @@ export function gatherLegacyFromData(entries: any[], filterNested?: string[], us
                 filteredEntries.push(entry);
             } else if (entryId.startsWith('profile-grid-0-tweet-')) {
                 filteredEntries.push(entry);
+            } else if (entryId.startsWith('list-conversation-')) {
+                filteredEntries.push(entry);
             }
             if (filterNested && filterNested.some((f) => entryId.startsWith(f))) {
                 filteredEntries.push(...entry.content.items);
@@ -94,7 +96,7 @@ export function gatherLegacyFromData(entries: any[], filterNested?: string[], us
     for (const entry of filteredEntries) {
         if (entry.entryId) {
             const content = entry.content || entry.item;
-            let tweet = content?.content?.tweetResult?.result || content?.itemContent?.tweet_results?.result;
+            let tweet = content?.content?.tweetResult?.result || content?.itemContent?.tweet_results?.result || content?.items[0]?.item?.itemContent?.tweetResult?.result || content?.items[0]?.item?.itemContent?.tweet_results?.result;
             if (tweet && tweet.tweet) {
                 tweet = tweet.tweet;
             }
