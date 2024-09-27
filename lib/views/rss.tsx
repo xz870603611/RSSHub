@@ -27,11 +27,16 @@ const RSS: FC<{ data: Data }> = ({ data }) => {
                 )}
                 <lastBuildDate>{data.lastBuildDate}</lastBuildDate>
                 <ttl>{data.ttl}</ttl>
+                {data?.previousPage && <previousPage>{data.previousPage}</previousPage>}
+                {data?.nextPage && <nextPage>{data.nextPage}</nextPage>}
                 {data.item?.map((item) => (
                     <item>
                         <title>{item.title}</title>
                         <description>{item.description}</description>
                         <link>{item.link}</link>
+                        {item?.favoriteCount && <favoriteCount>{item.favoriteCount}</favoriteCount>}
+                        {item?.replyCount && <replyCount>{item.replyCount}</replyCount>}
+                        {item?.retweetCount && <retweetCount>{item.retweetCount}</retweetCount>}
                         <guid isPermaLink="false">{item.guid || item.link || item.title}</guid>
                         {item.pubDate && <pubDate>{item.pubDate}</pubDate>}
                         {item.author && <author>{item.author}</author>}

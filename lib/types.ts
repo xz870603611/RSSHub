@@ -43,6 +43,9 @@ export type DataItem = {
         html: string;
         text: string;
     };
+    favoriteCount: number;
+    replyCount: number;
+    retweetCount: number;
     image?: string;
     banner?: string;
     updated?: number | string | Date;
@@ -79,9 +82,10 @@ export type Data = {
     itunes_category?: string;
     itunes_explicit?: string | boolean;
     id?: string;
-
     atomlink?: string;
     ttl?: number;
+    previousPage?: string;
+    nextPage?: string;
 };
 
 // namespace

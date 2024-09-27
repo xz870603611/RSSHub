@@ -378,6 +378,9 @@ const ProcessFeed = (ctx, { data = [] }, params = {}) => {
             originalItem.user.screen_name && (originalItem.id_str || originalItem.conversation_id_str)
                 ? `https://x.com/${originalItem.user.screen_name}/status/${originalItem.id_str || originalItem.conversation_id_str}`
                 : `https://x.com/${item.user.screen_name}/status/${item.id_str || item.conversation_id_str}`;
+        const favoriteCount = originalItem?.favorite_count;
+        const replyCount = originalItem?.reply_count;
+        const retweetCount = originalItem?.retweet_count;
         return {
             title,
             author: authorName,
@@ -385,7 +388,9 @@ const ProcessFeed = (ctx, { data = [] }, params = {}) => {
             pubDate: parseDate(item.created_at),
             link,
             guid: link.replace('x.com', 'twitter.com'),
-
+            favoriteCount,
+            replyCount,
+            retweetCount,
             _extra:
                 (isRetweet && {
                     links: [

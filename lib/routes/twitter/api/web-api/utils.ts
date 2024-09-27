@@ -78,6 +78,7 @@ export const paginationTweets = async (endpoint: string, userId: number | undefi
 export function gatherLegacyFromData(entries: any[], filterNested?: string[], userId?: number | string) {
     const tweets: any[] = [];
     const filteredEntries: any[] = [];
+    const filterPage: any[] = [];
     for (const entry of entries) {
         const entryId = entry.entryId;
         if (entryId) {
@@ -87,6 +88,8 @@ export function gatherLegacyFromData(entries: any[], filterNested?: string[], us
                 filteredEntries.push(entry);
             } else if (entryId.startsWith('list-conversation-')) {
                 filteredEntries.push(entry);
+            } else if (entryId.startsWith('cursor-')) {
+                filterPage.push(entry);
             }
             if (filterNested && filterNested.some((f) => entryId.startsWith(f))) {
                 filteredEntries.push(...entry.content.items);
@@ -120,12 +123,11 @@ export function gatherLegacyFromData(entries: any[], filterNested?: string[], us
                         legacy.retweeted_status = retweet.legacy;
                     }
                     if (userId === undefined || legacy.user_id_str === userId + '') {
-                        tweets.push({ ...legacy, full_text: tweet.note_tweet?.note_tweet_results?.result?.text || legacy.full_text });
+                        tweets.push({ ...legacy, full_text: tweet.note_tweet?.note_tweet_results?.result?.text || legacy.full_text, filterPage: filterPage || [] });
                     }
                 }
             }
         }
     }
-
     return tweets;
 }

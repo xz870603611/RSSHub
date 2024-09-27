@@ -50,25 +50,34 @@ export const route: Route = {
 
 async function handler(ctx) {
     const id = ctx.req.param('id');
-
+    const cursor = ctx.req.query('cursor');
+    // 增加noCache参数解决缓存问题
+    const noCache = ctx.req.query('noCache');
     // For compatibility
     const { count, exclude_replies, include_rts } = utils.parseRouteParams(ctx.req.param('routeParams'));
-    const params = count ? { count } : {};
-
+    let params: any = count ? { count } : {};
+    if (cursor) {
+        params = { ...params, cursor };
+    }
     await api.init();
     const userInfo = await api.getUser(id);
-    let data = await (exclude_replies ? api.getUserTweets(id, params) : api.getUserTweetsAndReplies(id, params));
+    let data: any = null;
+    data = noCache ? await api.getUserTweets(id, params) : await (exclude_replies ? api.getUserTweets(id, params) : api.getUserTweetsAndReplies(id, params));
     if (!include_rts) {
         data = utils.excludeRetweet(data);
     }
-
     const profileImageUrl = userInfo?.profile_image_url || userInfo?.profile_image_url_https;
+    const value = data.find((item) => item?.filterPage?.length);
+    const previousPage = value?.filterPage?.find((item) => item?.content?.cursorType === 'Top')?.content?.value || '';
+    const nextPage = value?.filterPage?.find((item) => item?.content?.cursorType === 'Bottom')?.content?.value || '';
 
     return {
         title: `Twitter @${userInfo?.name}`,
         link: `https://x.com/${userInfo?.screen_name}`,
         image: profileImageUrl.replace(/_normal.jpg$/, '.jpg'),
         description: userInfo?.description,
+        previousPage,
+        nextPage,
         item: utils.ProcessFeed(ctx, {
             data,
         }),
